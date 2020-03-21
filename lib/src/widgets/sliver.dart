@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:flutter_staggered_grid_view/src/rendering/sliver_staggered_grid.dart';
 import 'package:flutter_staggered_grid_view/src/rendering/sliver_variable_size_box_adaptor.dart';
 import 'package:flutter_staggered_grid_view/src/widgets/staggered_tile.dart';
@@ -400,9 +399,11 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
   /// arrangement.
   const SliverStaggeredGrid({
     Key key,
+    Axis scrollDirection: Axis.vertical,
     @required SliverChildDelegate delegate,
     @required this.gridDelegate,
-  }) : super(key: key, delegate: delegate);
+  })  : scrollDirection = scrollDirection,
+        super(key: key, delegate: delegate);
 
   /// Creates a sliver that places multiple box children in a two dimensional
   /// arrangement with a fixed number of tiles in the cross axis.
@@ -415,6 +416,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
   ///  * [new StaggeredGridView.count], the equivalent constructor for [StaggeredGridView] widgets.
   SliverStaggeredGrid.count({
     Key key,
+    Axis scrollDirection: Axis.vertical,
     @required int crossAxisCount,
     double mainAxisSpacing: 0.0,
     double crossAxisSpacing: 0.0,
@@ -427,6 +429,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
           staggeredTileBuilder: (i) => staggeredTiles[i],
           staggeredTileCount: staggeredTiles?.length,
         ),
+        scrollDirection = scrollDirection,
         super(
             key: key,
             delegate: new SliverChildListDelegate(children,
@@ -448,6 +451,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
   ///  [StaggeredGridView] widgets.
   SliverStaggeredGrid.countBuilder({
     Key key,
+    Axis scrollDirection: Axis.vertical,
     @required int crossAxisCount,
     @required IndexedStaggeredTileBuilder staggeredTileBuilder,
     @required IndexedWidgetBuilder itemBuilder,
@@ -461,6 +465,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
           staggeredTileBuilder: staggeredTileBuilder,
           staggeredTileCount: itemCount,
         ),
+        scrollDirection = scrollDirection,
         super(
           key: key,
           delegate: SliverChildBuilderDelegate(
@@ -482,6 +487,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
   ///  * [new StaggeredGridView.extent], the equivalent constructor for [StaggeredGridView] widgets.
   SliverStaggeredGrid.extent({
     Key key,
+    Axis scrollDirection: Axis.vertical,
     @required double maxCrossAxisExtent,
     double mainAxisSpacing: 0.0,
     double crossAxisSpacing: 0.0,
@@ -494,6 +500,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
           staggeredTileBuilder: (i) => staggeredTiles[i],
           staggeredTileCount: staggeredTiles?.length,
         ),
+        scrollDirection = scrollDirection,
         super(
             key: key,
             delegate: new SliverChildListDelegate(children,
@@ -515,6 +522,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
   ///  [StaggeredGridView] widgets.
   SliverStaggeredGrid.extentBuilder({
     Key key,
+    Axis scrollDirection: Axis.vertical,
     @required double maxCrossAxisExtent,
     @required IndexedStaggeredTileBuilder staggeredTileBuilder,
     @required IndexedWidgetBuilder itemBuilder,
@@ -528,6 +536,7 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
           staggeredTileBuilder: staggeredTileBuilder,
           staggeredTileCount: itemCount,
         ),
+        scrollDirection = scrollDirection,
         super(
           key: key,
           delegate: SliverChildBuilderDelegate(
@@ -540,18 +549,22 @@ class SliverStaggeredGrid extends SliverVariableSizeBoxAdaptorWidget {
 
   /// The delegate that controls the size and position of the children.
   final SliverStaggeredGridDelegate gridDelegate;
+  final Axis scrollDirection;
 
   @override
   RenderSliverStaggeredGrid createRenderObject(BuildContext context) {
     final SliverVariableSizeBoxAdaptorElement element = context;
     return new RenderSliverStaggeredGrid(
-        childManager: element, gridDelegate: gridDelegate);
+        childManager: element,
+        gridDelegate: gridDelegate,
+        scrollDirection: scrollDirection);
   }
 
   @override
   void updateRenderObject(
       BuildContext context, RenderSliverStaggeredGrid renderObject) {
     renderObject.gridDelegate = gridDelegate;
+    renderObject.scrollDirection = scrollDirection;
   }
 
   @override
